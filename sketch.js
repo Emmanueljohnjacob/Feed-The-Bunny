@@ -9,15 +9,16 @@ const Composite = Matter.Composite;
 
 let engine;
 let world;
-var rope,fruit,ground;
+var rope,rope3,fruit,ground;
 var fruit_con;
 var fruit_con_2;
+var fruit_con_3;
 
 var bg_img;
 var food;
 var rabbit;
 
-var button,blower;
+var button,blower,button2,button3;
 var bunny;
 var blink,eat,sad;
 var mute_btn;
@@ -53,7 +54,17 @@ function preload()
 }
 
 function setup() {
-  createCanvas(500,700);
+  var ismobile=/iPhone|iPod|iPad|Android/i.test(navigator.userAgent)
+  if(ismobile){
+    canw=displayWidth
+    canh=displayHeight
+    createCanvas(canw+80,canh)
+  }
+  else{
+    canw=windowWidth
+    canh=windowHeight
+    createCanvas(canw,canh)
+  }
 
   frameRate(80);
 
@@ -67,10 +78,22 @@ function setup() {
   button.position(220,30);
   button.size(50,50);
   button.mouseClicked(drop);
+
+  button2 = createImg('cut_btn.png');
+  button2.position(330,35);
+  button2.size(50,50);
+  button2.mouseClicked(drop2);
+
+  button3 = createImg('cut_btn.png');
+  button3.position(360,200);
+  button3.size(50,50);
+  button3.mouseClicked(drop3);
+
   blower = createImg('balloon.png');
   blower.position(10,250);
   blower.size(150,100);
   blower.mouseClicked(blowair);
+
   mutebutton = createImg('mute.png');
   mutebutton.position(450,20);
   mutebutton.size(50,50);
@@ -78,6 +101,8 @@ function setup() {
 
   
   rope = new Rope(7,{x:245,y:30});
+  rope2 = new Rope(6,{x:370,y:40});
+  rope3 = new Rope(4,{x:400,y:225});
   ground = new Ground(200,690,600,20);
 
   blink.frameDelay = 20;
@@ -95,6 +120,8 @@ function setup() {
   Matter.Composite.add(rope.body,fruit);
 
   fruit_con = new Link(rope,fruit);
+  fruit_con_2 = new Link(rope2,fruit);
+  fruit_con_3 = new Link(rope3,fruit);
 
   rectMode(CENTER);
   ellipseMode(RADIUS);
@@ -105,7 +132,7 @@ function setup() {
 function draw() 
 {
   background(51);
-  image(bg_img,0,0,490,690);
+  image(bg_img,0,0,canw,canh);
 
   push();
   imageMode(CENTER);
@@ -115,6 +142,8 @@ function draw()
   pop();
 
   rope.show();
+  rope2.show();
+  rope3.show();
   Engine.update(engine);
   ground.show();
 
@@ -144,7 +173,20 @@ function drop()
   fruit_con = null;
   cut_sound.play() 
 }
-
+function drop2()
+{
+  rope2.break();
+  fruit_con_2.detach();
+  fruit_con_2 = null;
+  cut_sound.play() 
+}
+function drop3()
+{
+  rope3.break();
+  fruit_con_3.detach();
+  fruit_con_3 = null;
+  cut_sound.play() 
+}
 
 function collide(body,sprite)
 {
